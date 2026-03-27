@@ -1,0 +1,99 @@
+{% extends "admin/base.html" %}
+{% block title %}Kullanıcılar - Admin Panel{% endblock %}
+{% block content %}
+<div class="content-header">
+    <h1>📊 Kayıtlı Kullanıcılar</h1>
+    <p>Toplam {{ users|length }} kullanıcı</p>
+</div>
+<div class="stats-grid" style="margin-bottom: 30px;">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ users|length }}</h3>
+            <p>Toplam Kullanıcı</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ total_ratings }}</h3>
+            <p>Toplam Değerlendirme</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <i class="fas fa-comment"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ total_comments }}</h3>
+            <p>Toplam Yorum</p>
+        </div>
+    </div>
+</div>
+<div class="glass-effect" style="padding: 20px; border-radius: 16px;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
+                <th style="padding: 15px; text-align: left; color: #a0aec0;">ID</th>
+                <th style="padding: 15px; text-align: left; color: #a0aec0;">Kullanıcı Adı</th>
+                <th style="padding: 15px; text-align: left; color: #a0aec0;">Email</th>
+                <th style="padding: 15px; text-align: center; color: #a0aec0;">Değerlendirmeler</th>
+                <th style="padding: 15px; text-align: center; color: #a0aec0;">Yorumlar</th>
+                <th style="padding: 15px; text-align: left; color: #a0aec0;">Kayıt Tarihi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.3s;"
+                onmouseover="this.style.background='rgba(255,255,255,0.03)'"
+                onmouseout="this.style.background='transparent'">
+                <td style="padding: 15px; color: #e2e8f0;">{{ user.id }}</td>
+                <td style="padding: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div
+                            style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                            {{ user.kullanici_adi[0].upper() }}
+                        </div>
+                        <span style="color: #e2e8f0; font-weight: 500;">{{ user.kullanici_adi }}</span>
+                    </div>
+                </td>
+                <td style="padding: 15px; color: #a0aec0;">{{ user.email }}</td>
+                <td style="padding: 15px; text-align: center;">
+                    <span
+                        style="background: rgba(52, 211, 153, 0.2); color: #34d399; padding: 5px 12px; border-radius: 20px; font-weight: 600;">
+                        {{ user.rating_count }}
+                    </span>
+                </td>
+                <td style="padding: 15px; text-align: center;">
+                    <span
+                        style="background: rgba(96, 165, 250, 0.2); color: #60a5fa; padding: 5px 12px; border-radius: 20px; font-weight: 600;">
+                        {{ user.comment_count }}
+                    </span>
+                </td>
+                <td style="padding: 15px; color: #a0aec0;">
+                    {{ user.olusturma_tarihi.strftime('%d.%m.%Y') if user.olusturma_tarihi else 'N/A' }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<style>
+    @media (max-width: 768px) {
+        table {
+            font-size: 12px;
+        }
+        th,
+        td {
+            padding: 10px 5px !important;
+        }
+        .stat-card h3 {
+            font-size: 20px;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,321 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard - TIGRAI Admin{% endblock %}
+{% block content %}
+<div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h2 class="page-title">🚀 Genel Bakış</h2>
+        <p class="text-muted">Sistem durumunu ve son aktiviteleri buradan takip edebilirsiniz.</p>
+    </div>
+    <a href="/" class="btn-primary"
+        style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 10px 20px; border-radius: 12px; color: white; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+        <span>🏠</span> Ana Sayfaya Dön
+    </a>
+</div>
+<!-- İstatistik Kartları -->
+<div class="stats-grid">
+    <div class="stat-card glass-effect">
+        <div class="stat-icon purple">🎬</div>
+        <div class="stat-info">
+            <h3>{{ total_content }}</h3>
+            <p>Toplam İçerik</p>
+        </div>
+        <div class="stat-trend">+12 bugün</div>
+    </div>
+    <div class="stat-card glass-effect">
+        <div class="stat-icon blue">👥</div>
+        <div class="stat-info">
+            <h3>{{ total_users }}</h3>
+            <p>Kayıtlı Kullanıcı</p>
+        </div>
+        <div class="stat-trend positive">+5 bu hafta</div>
+    </div>
+    <div class="stat-card glass-effect">
+        <div class="stat-icon orange">⭐</div>
+        <div class="stat-info">
+            <h3>{{ total_ratings }}</h3>
+            <p>Toplam Puan</p>
+        </div>
+        <div class="stat-trend">+32 yeni</div>
+    </div>
+    <div class="stat-card glass-effect">
+        <div class="stat-icon pink">💬</div>
+        <div class="stat-info">
+            <h3>{{ total_comments }}</h3>
+            <p>Yorumlar</p>
+        </div>
+        <div class="stat-trend">Aktif</div>
+    </div>
+</div>
+<div class="dashboard-grid">
+    <!-- Popüler İçerikler -->
+    <div class="content-card glass-effect">
+        <div class="card-header">
+            <h3>🔥 Trend İçerikler</h3>
+            <button class="btn-icon">⋮</button>
+        </div>
+        <div class="table-responsive">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Poster</th>
+                        <th>Başlık</th>
+                        <th>Tür</th>
+                        <th>Puan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for icerik in popular_content %}
+                    <tr>
+                        <td>
+                            <div class="poster-preview"
+                                style="background-image: url('{{ icerik.poster_url or 'https://placehold.co/50x75' }}');">
+                            </div>
+                        </td>
+                        <td class="fw-bold">{{ icerik.baslik }}</td>
+                        <td><span class="badge {{ icerik.tur|lower }}">{{ icerik.tur }}</span></td>
+                        <td>
+                            <div class="rating-badge">
+                                ⭐ {{ icerik.imdb_puani }}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Son Yorumlar -->
+    <div class="content-card glass-effect">
+        <div class="card-header">
+            <h3>💬 Son Aktiviteler</h3>
+            <span class="badge new">Canlı</span>
+        </div>
+        <div class="comments-list">
+            {% for yorum in recent_comments %}
+            <div class="comment-item">
+                <div class="comment-avatar">{{ yorum.kullanici.kullanici_adi[0]|upper }}</div>
+                <div class="comment-body">
+                    <div class="comment-header">
+                        <span class="username">{{ yorum.kullanici.kullanici_adi }}</span>
+                        <span class="target">→ {{ yorum.icerik.baslik }}</span>
+                    </div>
+                    <p class="comment-text">{{ yorum.yorum_metni }}</p>
+                    <span class="comment-time">{{ yorum.olusturma_tarihi.strftime('%H:%M') if yorum.olusturma_tarihi
+                        else 'Az önce' }}</span>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>Henüz yorum yok. Sessiz bir gün! 🍃</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<style>
+    /* Dashboard Specific Styles */
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+    .page-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+    .text-muted {
+        color: #8b9bb4;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .stat-card {
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    .stat-icon.purple {
+        background: rgba(156, 39, 176, 0.2);
+        color: #ce93d8;
+    }
+    .stat-icon.blue {
+        background: rgba(33, 150, 243, 0.2);
+        color: #90caf9;
+    }
+    .stat-icon.orange {
+        background: rgba(255, 152, 0, 0.2);
+        color: #ffcc80;
+    }
+    .stat-icon.pink {
+        background: rgba(233, 30, 99, 0.2);
+        color: #f48fb1;
+    }
+    .stat-info h3 {
+        font-size: 1.8rem;
+        margin: 0;
+        color: #fff;
+    }
+    .stat-info p {
+        margin: 0;
+        color: #8b9bb4;
+        font-size: 0.9rem;
+    }
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+    }
+    .content-card {
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+    }
+    .card-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .poster-preview {
+        width: 40px;
+        height: 60px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 4px;
+    }
+    .rating-badge {
+        background: rgba(255, 193, 7, 0.15);
+        color: #ffc107;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .comments-list {
+        padding: 1rem;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    .comment-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .comment-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        flex-shrink: 0;
+    }
+    .comment-body {
+        flex: 1;
+    }
+    .comment-header {
+        margin-bottom: 4px;
+        font-size: 0.9rem;
+    }
+    .username {
+        font-weight: bold;
+        color: #fff;
+    }
+    .target {
+        color: #8b9bb4;
+        font-size: 0.85rem;
+    }
+    .comment-text {
+        color: #cbd5e0;
+        line-height: 1.4;
+        margin-bottom: 4px;
+    }
+    .comment-time {
+        font-size: 0.75rem;
+        color: #64748b;
+    }
+    @media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        .stat-card {
+            padding: 1rem;
+        }
+        .page-title {
+            font-size: 1.4rem;
+        }
+        .modern-table {
+            font-size: 0.85rem;
+        }
+        .modern-table th,
+        .modern-table td {
+            padding: 0.5rem;
+        }
+        .poster-preview {
+            width: 30px;
+            height: 45px;
+        }
+        .comment-item {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            font-size: 0.9rem;
+        }
+    }
+    @media (max-width: 480px) {
+        .dashboard-header {
+            margin-bottom: 1rem;
+        }
+        .stats-grid {
+            gap: 1rem;
+        }
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+        .stat-info h3 {
+            font-size: 1.4rem;
+        }
+        .card-header {
+            padding: 1rem;
+        }
+        .card-header h3 {
+            font-size: 1rem;
+        }
+        .modern-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+</style>
+{% endblock %}

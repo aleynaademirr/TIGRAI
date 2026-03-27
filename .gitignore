@@ -1,0 +1,67 @@
+# Genel
+.idea/
+.vscode/
+build/
+dist/
+*.log
+logs/
+
+# Python / Backend
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/.env
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
+backend/*.sqlite3
+backend/*.faiss
+backend/*.pkl
+backend/model_dump.pkl
+backend/*.csv
+backend/*.zip
+backend/kaggle_data/
+backend/recommendation_system*.db
+backend/tavsiye.db
+
+# Frontend / Flutter
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.pub-cache/
+frontend/.pub/
+frontend/build/
+frontend/ios/Pods/
+frontend/ios/.symlinks/
+frontend/ios/Flutter/Flutter.framework/
+frontend/ios/Flutter/Flutter.podspec
+frontend/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+frontend/venv/
+frontend/*.db
+
+# Büyük Dosyalar ve Sunumlar
+*.apk
+diger/UGa03360
+*.pptx
+*.pdf
+*.zip
+*.rar
+*.tar.gz
+
+# Node (Eğer varsa)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Diger Gereksiz Klasorler (Sadece Githuba Gitmesini Engeller)
+diger/
+Diğer Şeyler/
+sqlite-tools-win-x64-3510100/
+
+# Gereksiz scriptler, islem dosyalari ve raporlar
+*.bat
+*.txt
+*.md
+!README.md

@@ -1,0 +1,68 @@
+{% extends "admin/base.html" %}
+{% block title %}İçerikler - TIGRAI Admin{% endblock %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2 style="color: #4CAF50;">📚 İçerik Yönetimi</h2>
+    <a href="/admin/icerikler/yeni" class="btn btn-primary">+ Yeni İçerik Ekle</a>
+</div>
+<div class="card">
+    <form method="get" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+        <input type="text" name="search" placeholder="İçerik ara..." value="{{ search }}" style="flex: 1;">
+        <select name="tur" style="width: 200px;">
+            <option value="">Tüm Türler</option>
+            <option value="Film" {% if tur=='Film' %}selected{% endif %}>Film</option>
+            <option value="Dizi" {% if tur=='Dizi' %}selected{% endif %}>Dizi</option>
+            <option value="Kitap" {% if tur=='Kitap' %}selected{% endif %}>Kitap</option>
+        </select>
+        <button type="submit" class="btn btn-secondary">Filtrele</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Başlık</th>
+                <th>Tür</th>
+                <th>Kategoriler</th>
+                <th>IMDB</th>
+                <th>Yıl</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for icerik in icerikler %}
+            <tr>
+                <td>{{ icerik.id }}</td>
+                <td><strong>{{ icerik.baslik }}</strong></td>
+                <td><span style="background: rgba(76,175,80,0.3); padding: 0.3rem 0.6rem; border-radius: 4px;">{{
+                        icerik.tur }}</span></td>
+                <td>{{ icerik.kategoriler[:30] }}...</td>
+                <td>⭐ {{ icerik.imdb_puani }}</td>
+                <td>{{ icerik.yil or '-' }}</td>
+                <td>
+                    <a href="/admin/icerikler/{{ icerik.id }}/duzenle" class="btn btn-secondary"
+                        style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Düzenle</a>
+                    <form method="post" action="/admin/icerikler/{{ icerik.id }}/sil" style="display: inline;"
+                        onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                        <button type="submit" class="btn btn-danger"
+                            style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Sil</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="?page={{ page - 1 }}&search={{ search }}&tur={{ tur }}">← Önceki</a>
+        {% endif %}
+        {% for p in range(1, total_pages + 1) %}
+        <a href="?page={{ p }}&search={{ search }}&tur={{ tur }}" class="{% if p == page %}active{% endif %}">{{ p
+            }}</a>
+        {% endfor %}
+        {% if page < total_pages %} <a href="?page={{ page + 1 }}&search={{ search }}&tur={{ tur }}">Sonraki →</a>
+            {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

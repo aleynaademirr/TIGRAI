@@ -1,0 +1,36 @@
+try:
+    from database import SessionLocal, Icerik, Kullanici, Puan
+    db = SessionLocal()
+    print("=" * 60)
+    print("VERİTABANI DURUMU")
+    print("=" * 60)
+    toplam_icerik = db.query(Icerik).count()
+    film_sayisi = db.query(Icerik).filter(Icerik.tur == "Film").count()
+    dizi_sayisi = db.query(Icerik).filter(Icerik.tur == "Dizi").count()
+    kitap_sayisi = db.query(Icerik).filter(Icerik.tur == "Kitap").count()
+    kullanici_sayisi = db.query(Kullanici).count()
+    puan_sayisi = db.query(Puan).count()
+    print(f"\nToplam İçerik: {toplam_icerik}")
+    print(f"  - Film: {film_sayisi}")
+    print(f"  - Dizi: {dizi_sayisi}")
+    print(f"  - Kitap: {kitap_sayisi}")
+    print(f"\nToplam Kullanıcı: {kullanici_sayisi}")
+    print(f"Toplam Puan: {puan_sayisi}")
+    if toplam_icerik == 0:
+        print("\n⚠️  UYARI: Veritabanı boş!")
+        print("Verileri yüklemek için:")
+        print("  1. Örnek veriler: python init_db.py")
+        print("  2. Kaggle verileri: python kaggle_data_importer.py")
+    elif toplam_icerik < 20:
+        print("\n⚠️  UYARI: Çok az içerik var!")
+        print("Daha fazla veri için: python kaggle_data_importer.py")
+    else:
+        print("\n✅ Veritabanı hazır!")
+    print("=" * 60)
+    db.close()
+except Exception as e:
+    print(f"\n❌ HATA: {e}")
+    print("\nÇözüm:")
+    print("  1. Virtual environment aktif mi? venv\\Scripts\\activate")
+    print("  2. Paketler kurulu mu? pip install -r requirements.txt")
+    print("  3. Veritabanı var mı? python init_db.py")
